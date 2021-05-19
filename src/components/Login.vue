@@ -1,6 +1,7 @@
 <template>
   <div class="login_container">
-    <div class="login_box">
+    
+      <div class="login_box">
       <!-- 头像 -->
       <div class="avatar_box">
         <img src="../assets/logo.png" alt="">
@@ -14,19 +15,19 @@
       ref="loginFromRef"
       >
         <!-- 账户 -->
-        <el-form-item prop="username">
+        <el-form-item prop="name">
           <el-input 
-          prefix-icon="el-icon-user"
-          v-model="loginFrom.username"
+          prefix-icon="el-icon-name"
+          v-model="loginFrom.name"
           placeholder="请输入账户"
           ></el-input>
         </el-form-item>
         <!-- 密码 -->
-        <el-form-item prop="password">
+        <el-form-item prop="passwd">
           <el-input 
           prefix-icon="el-icon-unlock"
-          show-password
-          v-model="loginFrom.password"
+          show-passwd
+          v-model="loginFrom.passwd"
           placeholder="请输入密码"
           ></el-input>
         </el-form-item>
@@ -45,19 +46,20 @@ export default {
   data(){
     return {
       // 登录双向绑定
+      goodsLists:"",
       loginFrom: {
-        username:'',
-        password:''
+        name:'',
+        passwd:''
       },
       // 登录验证
       loginFromRules:{
         // 用户是否合法
-        username: [
+        name: [
           { required: true, message: '请输入登录名称', trigger: 'blur' },
           { min: 3, max: 10, message: '长度在 6 到 10 个字符', trigger: 'blur' }
         ],
         // 密码是否合法
-        password: [
+        passwd: [
           { required: true, message: '请输入登录密码', trigger: 'blur' },
           { min: 6, max: 15, message: '长度在 6 到 15 个字符', trigger: 'blur' }
         ]
@@ -73,12 +75,18 @@ export default {
     },
     // 登录验证
     login(){
-      this.$refs.loginFromRef.validate(valid => {
-        if(!valid) return;
-        this.$http.post("login",this.loginFrom)
+      this.$refs.loginFromRef.validate(async valid => {
+      if(!valid) return
+      const { data:res } =await this.$http.post("login", this.loginFrom)
+      console.log(res)
+      if(res.code !== 200) return this.$message.error("登录失败")
+      console.log('登录成功')
       });
-    }
-  }
+
+    },
+    
+  },
+  
 }
 </script>
 
